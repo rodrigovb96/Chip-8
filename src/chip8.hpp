@@ -4,6 +4,9 @@
 #include <fstream>
 #include <string_view>
 
+constexpr bool DEBUG = true;
+
+
 namespace chip8
 {
     class Randomer 
@@ -64,6 +67,7 @@ namespace chip8
         std::array<uint8_t,64 * 32> graphics; 
         std::array<bool,16> keyboard;
         bool draw_flag;
+        bool play_sound_flag;
 
         uint8_t delay_timer;
         uint8_t sound_timer;
@@ -82,6 +86,7 @@ namespace chip8
         void inline set_key_pressed(int pos) { keyboard[pos] = 1; }  
         void inline release_key(int pos) { keyboard[pos] = 0; }
 
+        bool inline play_sound() const { return play_sound_flag; }
         bool inline need_to_draw() const { return draw_flag; }
         void inline set_draw_flag() { draw_flag = false; }
 

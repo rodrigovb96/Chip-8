@@ -9,6 +9,9 @@ void chip8::Core::init()
     sound_timer = 0;
     I = 0;
 
+    play_sound_flag = false;
+
+
     for(int i = 0; i < 16; i++)
     {
         keyboard[i] = false;
@@ -30,11 +33,15 @@ void chip8::Core::init()
 
 void chip8::Core::do_operation()
 {
+    reg_x = (opcode & 0x0F00) >> 8;
+    reg_y = (opcode & 0x00F0) >> 4;
+
 
     // Based in operations
     //https://github.com/mattmikolay/chip-8/wiki/CHIP%E2%80%908-Instruction-Set
     switch(opcode & 0xF000) // 0x0NNN
     {
+
         case 0x0000:
 
             switch(opcode & 0x000F)
@@ -72,7 +79,6 @@ void chip8::Core::do_operation()
         // skip following instruction if VX == NN
         // 0x3XNN
         case 0x3000:
-            reg_x = (opcode & 0x0F00) >> 8;
 
             if( registers[reg_x] == (opcode & 0x00FF) ) 
                 pc += 4; // skip instruction
@@ -83,8 +89,6 @@ void chip8::Core::do_operation()
         // skip following instruction if VX != NN
         // 0x4XNN
         case 0x4000:
-            reg_x = (opcode & 0x0F00) >> 8;
-
             if( registers[reg_x] != (opcode & 0x00FF) ) 
                 pc += 4; // skip instruction
             else
@@ -94,8 +98,6 @@ void chip8::Core::do_operation()
         // skip following instruction if VX == VY
         // 0x5XY0
         case 0x5000:
-            reg_x = (opcode & 0x0F00) >> 8;
-            reg_y = (opcode & 0x00F0) >> 4;
 
             if( registers[reg_x] == registers[reg_y] )
                 pc += 4; // skip instruction
@@ -106,7 +108,6 @@ void chip8::Core::do_operation()
         // Store number NN in VX
         // 0x6XNN
         case 0x6000:
-            reg_x = (opcode & 0x0F00) >> 8;
             registers[reg_x] = (opcode & 0x00FF);
             pc += 2; // next instruction
             break; 
@@ -114,14 +115,11 @@ void chip8::Core::do_operation()
         // add number NN to VX
         // 0x7XNN
         case 0x7000:
-            reg_x = (opcode & 0x0F00) >> 8;
             registers[reg_x] += (opcode & 0x00FF);
             pc += 2; // next instruction
             break; 
 
         case 0x8000:
-            reg_x = (opcode & 0x0F00) >> 8;
-            reg_y = (opcode & 0x00F0) >> 4;
 
             switch(opcode & 0x000F)
             {
@@ -214,8 +212,6 @@ void chip8::Core::do_operation()
 
         // Skip following instruction if VX != VY
         case 0x9000:
-            reg_x = (opcode & 0x0f00) >> 8;
-            reg_y = (opcode & 0x00f0) >> 4;
 
             if( registers[reg_x] != registers[reg_y] )
                 pc += 4; // skip instruction
@@ -239,7 +235,6 @@ void chip8::Core::do_operation()
         // Set VX to a random number with a mask of NN 
         // 0xCXNN
         case 0xC000:
-            reg_x = (opcode & 0x0f00) >> 8;
             registers[reg_x] = rand() & 0x00FF;
             pc += 2;
             break;
@@ -248,8 +243,6 @@ void chip8::Core::do_operation()
         // 0xDXYN
         case 0xD000:
         {
-            reg_x = (opcode & 0x0f00) >> 8;
-            reg_y = (opcode & 0x00f0) >> 4;
 
             uint8_t x = registers[reg_x];
             uint8_t y = registers[reg_y];
@@ -278,7 +271,6 @@ void chip8::Core::do_operation()
         
         // 0xEX**
         case 0xE000:
-            reg_x = (opcode & 0x0f00) >> 8;
             switch( opcode & 0x00FF )
             {
                 // 0xEX9E
@@ -306,7 +298,6 @@ void chip8::Core::do_operation()
        
         //0xFX**
         case 0xF000:
-            reg_x = (opcode & 0x0F00) >> 8;
             switch( opcode & 0x00FF )
             {
                 case 0x0007:
@@ -340,6 +331,7 @@ void chip8::Core::do_operation()
 
                 case 0x0018:
                     sound_timer = registers[ reg_x ];
+                    play_sound_flag = false;
                     pc += 2;
                     break;
 
@@ -404,15 +396,14 @@ void chip8::Core::emulate_cycle()
     
     do_operation();
 
-
-
     // Update timers
     if (delay_timer > 0)
         --delay_timer;
 
     if (sound_timer > 0)
         if(sound_timer == 1);
-            // TODO: Implement sound
+            play_sound_flag = true;
+
         --sound_timer;
 
 }
