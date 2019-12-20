@@ -1,7 +1,9 @@
+#include <map>
 #include <random>
 #include <array>
 #include <stack>
 #include <fstream>
+#include <functional>
 #include <string_view>
 
 namespace chip8
@@ -77,6 +79,8 @@ namespace chip8
         Core() : rand(0,255) {}
 
         void emulate_cycle();
+
+        std::map<uint16_t,std::function<void()> > operations;
 
         bool is_key_pressed(int pos) const { return keyboard[pos]; }
         void inline set_key_pressed(int pos) { keyboard[pos] = 1; }  
