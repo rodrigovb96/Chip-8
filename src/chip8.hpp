@@ -69,10 +69,12 @@ namespace chip8
 
         uint8_t delay_timer;
         uint8_t sound_timer;
+        bool sound_flag;
 
         Randomer rand;
 
         void init(); // init or reset the emulation
+        void init_opcodes();
         void do_operation();  
 
     public:
