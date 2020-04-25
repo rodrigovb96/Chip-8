@@ -91,6 +91,8 @@ namespace chip8
         bool inline need_to_draw() const { return draw_flag; }
         void inline set_draw_flag() { draw_flag = false; }
 
+        bool inline play_song() const { return sound_flag; }
+
         uint8_t pixel_in(int pos) const { return graphics[pos]; } 
 
         bool load_ROM(std::string_view filename); // TODO

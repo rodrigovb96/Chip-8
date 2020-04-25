@@ -425,6 +425,8 @@ void chip8::Core::emulate_cycle()
 
         --sound_timer;
     }
+    else
+        sound_flag = false;
 
 }
 

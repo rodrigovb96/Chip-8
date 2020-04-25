@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <chrono>
 #include <thread>
 
@@ -33,10 +34,17 @@ class Sfml_handler
     };
 
     Emulator emu;
+    sf::SoundBuffer buffer;
+    sf::Sound colision_sound;
 
 public:
     Sfml_handler() : window(sf::VideoMode(1024, 512), "Chip-8 Emulator!")
     {
+        if(!buffer.loadFromFile("song.wav"))
+            exit(-1);
+
+        colision_sound.setBuffer(buffer);
+
     }
 
     Emulator* get_emu() { return &emu; }
@@ -76,6 +84,7 @@ public:
 
             }
 
+
             if(emu.need_to_draw())
             {
                 for(int i = 0; i < 2048; i++)
@@ -92,6 +101,12 @@ public:
 
             }
 
+            if(emu.play_song())
+                colision_sound.play();
+            else
+                colision_sound.stop();
+
+
 
             std::this_thread::sleep_for(std::chrono::microseconds(1200));
         }
@@ -99,7 +114,7 @@ public:
 
     void draw_display()
     {
-        //define what pixel size::::since resolution is constant, variables won't be used
+        //define what pixel size::since resolution is constant, variables won't be used
         sf::RectangleShape rectangle(sf::Vector2f(13,13));
         for(int y=0; y < 32; ++y){
             for(int x=0; x < 64; ++x){
