@@ -1,7 +1,10 @@
 #include <SFML/Graphics.hpp>
 #include <chrono>
 #include <thread>
+#include "constants.h"
 
+
+namespace cts = constants;
 
 using Key = sf::Keyboard::Key;
 
@@ -35,7 +38,7 @@ class Sfml_handler
     Emulator emu;
 
 public:
-    Sfml_handler() : window(sf::VideoMode(1024, 512), "Chip-8 Emulator!")
+    Sfml_handler() : window(sf::VideoMode(cts::screeen::width, cts::screen::height), "Chip-8 Emulator!")
     {
     }
 
@@ -88,7 +91,7 @@ public:
                 draw_display(); 
                 window.display();
 
-                emu.set_draw_flag();
+                emu.no_need_to_draw();
 
             }
 
