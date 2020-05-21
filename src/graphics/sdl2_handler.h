@@ -2,9 +2,10 @@
 #include <chrono>
 #include "constants.h"
 #include <cstdlib>
+#ifdef DEBUG
 #include <iostream>
-
-//#include <thread>
+#endif 
+#include <thread>
 
 
 namespace cts = constants;
@@ -153,6 +154,7 @@ public:
 
 	void draw_display()
 	{
+		SDL_RenderClear(renderer);
 		SDL_Rect rectangle;
 		rectangle.h = 13;
 		rectangle.w = 13;
