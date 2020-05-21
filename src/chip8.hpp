@@ -2,6 +2,7 @@
 #include <array>
 #include <stack>
 #include <fstream>
+#include <iostream>
 #include <string_view>
 
 constexpr bool DEBUG = true;

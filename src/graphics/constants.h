@@ -4,8 +4,8 @@ namespace constants
 {
 		namespace screen
 		{
-				constexpr int width=1024;
-				constexpr int height=512;
+				constexpr int width=832;
+				constexpr int height=416;
 		}
 }
 
