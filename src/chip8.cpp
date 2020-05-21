@@ -421,6 +421,8 @@ bool chip8::Core::load_ROM(std::string_view filename)
     {
         memory[pos + i] = buffer[i];
     }
+
+    return true; // TODO: verify ROAM load 
 }
 
 
